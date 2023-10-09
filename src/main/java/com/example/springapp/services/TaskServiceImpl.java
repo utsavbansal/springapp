@@ -22,48 +22,41 @@ public class TaskServiceImpl implements TasksService{
     }
 
     @Override
-    public Task getTaskById(int id) {
-
+    public Task findTaskById(int id) {
+        boolean f=false;
         for(Task t:taskList)
         {
             if(t.getId()==id)
                 return t;
         }
+        if(!f)
+            throw new TaskNotFoundException(id);
         return null;
+    }
+
+    @Override
+    public Task getTaskById(int id) {
+        return findTaskById(id);
     }
 
     @Override
     public Task createTask(Task task) {
         Task t=new Task(task.getId(),task.getName(),task.isCompleted(),new Date());
-
+        taskList.add(t);
         return t;
     }
 
     @Override
     public Task updateTask(int id, Task task) {
-
-        for(Task t:taskList)
-        {
-            if(t.getId()==id)
-            {
-                t.setName(task.getName());
-                t.setCompleted(task.isCompleted());
-                t.setDueBy(task.getDueBy());
-                return t;
-            }
-        }
-
-        return null;
+        Task t=findTaskById(id);
+        t.setName(task.getName());
+        t.setCompleted(task.isCompleted());
+        t.setDueBy(task.getDueBy());
+        return t;
     }
 
     @Override
     public void deleteTask(int id) {
-        for(int i=0;i<taskList.size();i++)
-        {
-            Task t=taskList.get(i);
-            if(t.getId()==id)
-                taskList.remove(i);
-        }
-
+        taskList.remove(findTaskById(id));
     }
 }
