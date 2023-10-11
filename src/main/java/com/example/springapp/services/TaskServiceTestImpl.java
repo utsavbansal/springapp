@@ -1,6 +1,8 @@
 package com.example.springapp.services;
 
 import com.example.springapp.models.Task;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,5 +60,11 @@ public class TaskServiceTestImpl implements TasksService{
     @Override
     public void deleteTask(int id) {
         taskList.remove(findTaskById(id));
+    }
+    @ExceptionHandler(TasksService.TaskNotFoundException.class)
+    public ResponseEntity<String> handleException(Exception ex)
+    {
+        return ResponseEntity.notFound().build();
+        //return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
